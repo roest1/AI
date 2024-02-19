@@ -174,17 +174,21 @@ def trim_trials_at_cutoff(dataframe:pd.DataFrame):
     return final_trimmed_df
 
 
-def preprocess_data(dataframe: pd.DataFrame):
+def preprocess_data(dataframe: pd.DataFrame, normalize=True):
     df = dataframe.copy()
     df = interpolate(df)
     df = remove_bad_trials(df)
     df = translate_data_to_zero(df)
-    # Get min/max values after translation
-    p3_y_min, p3_y_max = df['P3_y'].min(), df['P3_y'].max()
-    p3_z_min, p3_z_max = df['P3_z'].min(), df['P3_z'].max()
-    df = normalize(df)
-    df = trim_trials_at_cutoff(df)
-    return df, p3_y_min, p3_y_max, p3_z_min, p3_z_max
+    if normalize:
+        # Get min/max values after translation
+        p3_y_min, p3_y_max = df['P3_y'].min(), df['P3_y'].max()
+        p3_z_min, p3_z_max = df['P3_z'].min(), df['P3_z'].max()
+        df = normalize(df)
+        df = trim_trials_at_cutoff(df)
+        return df, p3_y_min, p3_y_max, p3_z_min, p3_z_max
+    else:
+        df = trim_trials_at_cutoff(df)
+        return df
 
  
 ########################################################################
@@ -588,6 +592,10 @@ def plot_preprocessing_steps_to_pdf(df, pdf_filename='preprocessing_steps.pdf'):
 
     print(f"Preprocessing steps figure saved as {pdf_filename}")
 
+
+def get_confidence_intervals():
+    df = get_data()
+    
 
 def plot_model_results_to_pdf(model, X_test, y_test, test_args, trial_lengths, p3_y_min, p3_y_max, p3_z_min, p3_z_max, pdf_filename='singular_model_results.pdf'):
 
