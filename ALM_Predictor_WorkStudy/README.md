@@ -1,0 +1,5 @@
+# Body Fat Predictor
+
+Appendicular Lean Mass (ALM) is the amount of lean tissue present in the arms and legs. ALM measurements are derived from DXA Scans and most commonly used in sarcopenia research related to involuntary loss of strength in skeletal muscle mass. Our project utilized data collected from the Size Stream Scan (SS20) of the LSU Pennington Biomedical Research Center’s Metabolism and Body Composition Laboratory. In order to maintain the high accuracy of the DXA scan while using cost effective measuring method of the SS20 Scan, we design a neural network to predict ALM by training on 47 parameters measured from the SS20 Scan before validating the accuracy of our model based on the maximum, mean and standard deviation difference of the predicted versus actual ALM. 
+
+Our team would like to thank Dr. Peter Wolenski and Dr. Frederic Marazzato for their invaluable guidance and the LSU Pennington Biomedical Research Center’s Metabolism and Body Composition Laboratory for providing the database and sponsoring this project.
