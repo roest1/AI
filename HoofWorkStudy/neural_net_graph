@@ -1,0 +1,13 @@
+digraph {
+	X [label="Inputs = [DW_y, DW_z, SM_y, SM_z, CB_y, CB_z]" shape=box]
+	"Linear(in_features=6, out_features=32, bias=True)" [label="Linear(in_features=6, out_features=32, bias=True)"]
+	X -> "Linear(in_features=6, out_features=32, bias=True)"
+	"ReLU()" [label="ReLU()"]
+	"Linear(in_features=6, out_features=32, bias=True)" -> "ReLU()"
+	"Linear(in_features=32, out_features=32, bias=True)" [label="Linear(in_features=32, out_features=32, bias=True)"]
+	"ReLU()" -> "Linear(in_features=32, out_features=32, bias=True)"
+	"Linear(in_features=32, out_features=2, bias=True)" [label="Linear(in_features=32, out_features=2, bias=True)"]
+	"Linear(in_features=32, out_features=32, bias=True)" -> "Linear(in_features=32, out_features=2, bias=True)"
+	Ouput [label="Outputs = [P3_y, P3_z]" shape=box]
+	"Linear(in_features=32, out_features=2, bias=True)" -> output
+}
