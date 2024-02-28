@@ -595,6 +595,7 @@ def plot_preprocessing_steps_to_pdf(df, pdf_filename='preprocessing_steps.pdf'):
 
 def get_confidence_intervals():
     df = get_data()
+    df = preprocess_data(df, normalize=False)
     
 
 def plot_model_results_to_pdf(model, X_test, y_test, test_args, trial_lengths, p3_y_min, p3_y_max, p3_z_min, p3_z_max, pdf_filename='singular_model_results.pdf'):
