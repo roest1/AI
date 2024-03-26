@@ -1,7 +1,9 @@
-torch==2.1.0.dev20230708
+bayesian_optimization==1.4.3
 graphviz==0.20.1
-pandas==2.0.2
-numpy==1.24.3
 matplotlib==3.7.1
-scikit-learn==1.2.2
-PyPDF2==3.0.1
+numpy==1.22.3
+numpy==1.24.3
+pandas==2.0.2
+scikit_learn==1.2.2
+scipy==1.12.0
+torch==2.1.0.dev20230708

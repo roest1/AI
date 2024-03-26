@@ -1,6 +1,6 @@
 # Hoof Learning
 
-Machine learning methods to non-invasively predict P3 bone inside equine hooves. 
+Machine learning methods to non-invasively predict displacement of the third phalanx inside equine hooves. 
 
 # Prerequisites
 
@@ -10,7 +10,7 @@ Machine learning methods to non-invasively predict P3 bone inside equine hooves.
 # Run Code:
 
  ```bash
- git clone [Hoof](https://github.com/ML-RA-LSU-LECOR/Hoof.git)
+ git clone https://github.com/ML-RA-LSU-LECOR/Hoof.git
 
  cd Hoof
 
@@ -21,7 +21,6 @@ Machine learning methods to non-invasively predict P3 bone inside equine hooves.
  pip install -r requirements.txt
  ```
 
- Now you can run `test.ipynb`
 
 
 
