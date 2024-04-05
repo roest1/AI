@@ -14,8 +14,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-PATH_TO_DATA = '/Users/rileyoest/VS_Code/HoofStudy/Data/Original_Data'
-PATH_TO_CACHE = '/Users/rileyoest/VS_Code/HoofStudy/Data/Cache/'
+PATH_TO_DATA = '/Users/rileyoest/VS_Code/Hoof/Data/Original_Data'
+PATH_TO_CACHE = '/Users/rileyoest/VS_Code/Hoof/Data/Cache/'
 
 HEALTHY = ['10', '13', '25', '06', '12', '19', '22', '23']  # Healthy ID's
 
@@ -636,23 +636,25 @@ def calculate_confidence_intervals(df):
         ci_data = {'P3_y': [], 'P3_z': []}
         confidence_level = 0.95  # Define the confidence level here
         # Get the Z-score for the confidence level
-        z_score = stats.norm.interval(confidence_level)[1]
+        z_score = stats.norm.interval(confidence_level)[1] # take positive value 
 
         for column in ['P3_y', 'P3_z']:
             for count in range(max_length):
                 point_values = combo_df.groupby('Trial').nth(count)
                 if not point_values.empty:
                     mean = point_values[column].mean()
-                    std = point_values[column].std(ddof=1)
+                    #std = point_values[column].std(ddof=1)
+                    std = point_values[column].std(ddof=0)
                     n = len(point_values)
                     se = std / np.sqrt(n)
-
-                    # Calculate CI using the Z-score from stats.norm.interval
+                    
+                    # Calculate CI using the Z-score
                     ci_lower = mean - z_score * se
                     ci_upper = mean + z_score * se
 
                     ci_data[column].append({
                         'mean': mean,
+                        'std': std,
                         'lower_ci': ci_lower,
                         'upper_ci': ci_upper,
                         'n': n

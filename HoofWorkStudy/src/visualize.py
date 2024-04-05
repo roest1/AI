@@ -247,7 +247,7 @@ def plot_confidence_intervals_to_pdf(results):
                 plt.close()
 
 
-def plot_condition_trials_with_ci(dataframe, normalization_params, ci_results, resample_function):
+def plot_condition_trials_with_ci(dataframe, ci_results, resample_function):
     unique_conditions = dataframe[['isLaminitic', 'Shoe']].drop_duplicates()
 
     for index, condition in unique_conditions.iterrows():
@@ -289,17 +289,87 @@ def plot_condition_trials_with_ci(dataframe, normalization_params, ci_results, r
                 plt.close(fig)
 
 
-def plot_actual_curve(ax, trial_df, coord):
+def plot_combined_trials_with_ci_and_std(dataframe, ci_results, resample_function):
+    unique_conditions = dataframe[['isLaminitic', 'Shoe']].drop_duplicates()
+    pdf_filename = "../Media/combined_conditions_with_CI_and_STD.pdf"
+
+    with PdfPages(pdf_filename) as pdf:
+        for _, condition in unique_conditions.iterrows():
+            health_condition = 'Laminitic' if condition['isLaminitic'] else 'Healthy'
+            shoe_condition = condition['Shoe']
+
+            fig, axs = plt.subplots(1, 2, figsize=(12, 6), sharey=True)
+            fig.suptitle(f"{health_condition}, {shoe_condition}")
+
+            condition_df = dataframe[(dataframe['isLaminitic'] == condition['isLaminitic']) &
+                                     (dataframe['Shoe'] == condition['Shoe'])]
+
+            for ax, coord in zip(axs, ['P3_y', 'P3_z']):
+                # Plot all trial curves in muted color without adding them to the legend
+                for trial in condition_df['Trial'].unique():
+                    trial_df = condition_df[condition_df['Trial'] == trial]
+                    plot_actual_curve(ax, trial_df, coord,
+                                      use_legend=False, alpha=0.2)
+
+                # Plot CI and mean curve
+                ci_data = ci_results.get(
+                    (condition['isLaminitic'], condition['Shoe']), {}).get(coord, [])
+                if ci_data:
+                    target_length = max(len(trial_df)
+                                        for trial in condition_df['Trial'].unique())
+                    times = np.linspace(0, 100, target_length)
+                    means = [ci['mean'] for ci in ci_data]
+                    ci_lower = [ci['lower_ci'] for ci in ci_data]
+                    ci_upper = [ci['upper_ci'] for ci in ci_data]
+                    std_dev = [ci['std'] for ci in ci_data]
+
+                    # Resample for plotting
+                    resampled_means = resample_function(
+                        np.linspace(0, 1, len(means)), means, target_length)
+                    resampled_ci_lower = resample_function(np.linspace(
+                        0, 1, len(ci_lower)), ci_lower, target_length)
+                    resampled_ci_upper = resample_function(np.linspace(
+                        0, 1, len(ci_upper)), ci_upper, target_length)
+                    resampled_std = resample_function(np.linspace(
+                        0, 1, len(std_dev)), std_dev, target_length)
+
+                    resampled_std_lower = resampled_means - resampled_std
+                    resampled_std_upper = resampled_means + resampled_std
+
+                    # Plotting with emphasis on mean, CI, and STD
+                    ax.plot(times, resampled_means, label='Mean',
+                            color='black', linewidth=2, linestyle='--')
+                    ax.fill_between(times, resampled_std_lower, resampled_std_upper,
+                                    color='salmon', alpha=0.5, label='1 STD')
+                    ax.fill_between(times, resampled_ci_lower, resampled_ci_upper,
+                                    color='skyblue', alpha=1, label='95% CI')
+
+            # Adjust the legend to only show unique descriptors
+            handles, labels = plt.gca().get_legend_handles_labels()
+            by_label = dict(zip(labels, handles))
+            axs[0].legend(by_label.values(),
+                          by_label.keys(), loc='upper right')
+            axs[1].legend(by_label.values(),
+                          by_label.keys(), loc='upper right')
+
+            pdf.savefig(fig)
+            plt.close(fig)
+
+
+def plot_actual_curve(ax, trial_df, coord, use_legend=True, **kwargs):
     """
     Placeholder for function to plot the actual data curve for a given coordinate.
     Replace this with the actual logic to plot the curve based on 'trial_df' and 'coord'.
     """
     # Example plotting logic
+    label = coord if use_legend else None
+
     times = np.linspace(0, 100, len(trial_df))
-    ax.plot(times, trial_df[coord], label=coord)
+    ax.plot(times, trial_df[coord], label=label, **kwargs)
     ax.set_xlabel("Stride (%)")
     ax.set_ylabel(coord)
-    ax.legend()
+    if use_legend:
+        ax.legend()
 
     
 def print_model_accuracy(model, X_test, y_test):
